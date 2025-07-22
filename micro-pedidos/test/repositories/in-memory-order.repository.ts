@@ -13,7 +13,7 @@ export class InMemoryOrderRepository implements OrderRepository {
     return order || null;
   }
 
-  async update(data: Order): Promise<void> {
+  async save(data: Order): Promise<void> {
     const index = this.items.findIndex((order) => order.id === data.id);
 
     this.items[index] = data;
