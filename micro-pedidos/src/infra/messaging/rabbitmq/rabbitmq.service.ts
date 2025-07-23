@@ -10,8 +10,8 @@ export class RabbitMqService implements MessagingService {
     private readonly client: ClientProxy
   ) {}
 
-  async sendMessage(message: any): Promise<void> {
+  async sendMessage(message: any, event: string): Promise<void> {
     console.log("Enviando mensagem para RabbitMQ:", message);
-    await firstValueFrom(this.client.emit("orders_queue_event", message));
+    await firstValueFrom(this.client.emit(event, message));
   }
 }

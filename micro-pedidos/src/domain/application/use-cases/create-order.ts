@@ -33,7 +33,7 @@ export class CreateOrderUseCase {
 
     await this.orderRepository.create(order);
 
-    await this.menssagingService.sendMessage(order);
+    await this.menssagingService.sendMessage(order, "create-order");
 
     return right({ order });
   }
