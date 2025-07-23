@@ -13,7 +13,7 @@ let sendMessageExecuteSpy: MockInstance;
 // System under test
 let sut: DeliveryOrderUseCase;
 
-describe("Create Order", () => {
+describe("Delivery Order", () => {
   beforeEach(() => {
     inMemoryOrderRepository = new InMemoryOrderRepository();
     fakeMensaging = new FakeMensaging();
@@ -53,7 +53,7 @@ describe("Create Order", () => {
     expect(result.value).toBeInstanceOf(OrderNotFoundError);
   });
 
-  it("should be able to create an order", async () => {
+  it("should be able to delivery an order", async () => {
     const order = makeOrder({ status: "criado" });
     inMemoryOrderRepository.items.push(order);
 
