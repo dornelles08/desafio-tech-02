@@ -28,8 +28,6 @@ export class CreateOrderController {
       value,
     });
 
-    console.log(result);
-
     if (result.isLeft()) {
       throw new InternalServerErrorException();
     }
