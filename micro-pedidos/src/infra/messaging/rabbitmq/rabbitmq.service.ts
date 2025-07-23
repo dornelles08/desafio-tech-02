@@ -11,7 +11,6 @@ export class RabbitMqService implements MessagingService {
   ) {}
 
   async sendMessage(message: any, event: string): Promise<void> {
-    console.log("Enviando mensagem para RabbitMQ:", message);
     await firstValueFrom(this.client.emit(event, message));
   }
 }
