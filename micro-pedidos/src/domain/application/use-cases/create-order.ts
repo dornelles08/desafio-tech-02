@@ -1,6 +1,7 @@
 import { Either, right } from "@/core/either";
 import { Order } from "@/domain/enterprise/entities/Order";
 import { Injectable } from "@nestjs/common";
+import { MessagingService } from "../messaging/messaging";
 import { OrderRepository } from "../repositories/order.repository";
 
 interface CreateOrderUseCaseRequest {
@@ -18,7 +19,10 @@ type CreateOrderUseCaseResponse = Either<
 
 @Injectable()
 export class CreateOrderUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(
+    private readonly orderRepository: OrderRepository,
+    private readonly menssagingService: MessagingService
+  ) {}
 
   async execute({
     value,
@@ -28,6 +32,12 @@ export class CreateOrderUseCase {
     const order = new Order({ value, customerEmail, customerName, status: "criado" });
 
     await this.orderRepository.create(order);
+
+    await this.menssagingService.sendMessage(
+      JSON.stringify({
+        order,
+      })
+    );
 
     return right({ order });
   }
