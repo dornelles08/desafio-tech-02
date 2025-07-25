@@ -22,7 +22,7 @@ export class PayOrderController {
     const originalMsg = context.getMessage();
 
     try {
-      console.log(` Recebido evento 'order.paied' para o pedido ID: ${data.id}`);
+      console.log(`Recebido evento 'order.paied' para o pedido ID: ${data.id}`);
 
       await this.payOrderUseCase.execute({
         orderId: data.id,

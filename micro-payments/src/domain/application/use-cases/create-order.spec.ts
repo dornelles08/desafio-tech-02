@@ -20,15 +20,14 @@ describe("Create Order", () => {
       id: randomUUID(),
       createdAt: new Date(),
     });
-    console.log(order);
 
     const result = await sut.execute({
-      id: order.id,
+      id: order.id!,
       value: order.value,
       customerEmail: order.customerEmail,
       customerName: order.customerName,
       status: order.status,
-      createdAt: order.createdAt,
+      createdAt: order.createdAt!.toString(),
     });
 
     expect(result.isRight()).toBe(true);
