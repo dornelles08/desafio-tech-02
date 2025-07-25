@@ -9,6 +9,7 @@ import { PayOrderUseCase } from "./pay-order";
 let inMemoryOrderRepository: InMemoryOrderRepository;
 let fakeMensaging: FakeMensaging;
 let sendMessageExecuteSpy: MockInstance;
+
 // System under test
 let sut: PayOrderUseCase;
 
@@ -18,6 +19,7 @@ describe("Pay Order", () => {
     fakeMensaging = new FakeMensaging();
 
     sendMessageExecuteSpy = vi.spyOn(fakeMensaging, "sendMessage");
+
     sut = new PayOrderUseCase(inMemoryOrderRepository, fakeMensaging);
   });
 
@@ -38,6 +40,8 @@ describe("Pay Order", () => {
         status: "pago",
       })
     );
+
+    expect(sendMessageExecuteSpy).toHaveBeenCalled();
   });
 
   it("should not be able to pay an unexist order", async () => {

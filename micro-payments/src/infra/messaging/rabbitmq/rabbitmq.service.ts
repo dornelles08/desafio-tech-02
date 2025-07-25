@@ -7,8 +7,8 @@ import { firstValueFrom } from "rxjs";
 @Injectable()
 export class RabbitMqService implements MessagingService {
   constructor(
-    @Inject("PAYMENT_CLIENT")
-    private readonly payment_client: ClientProxy,
+    @Inject("ORDER_CLIENT")
+    private readonly order_client: ClientProxy,
 
     @Inject("NOTIFICATION_CLIENT")
     private readonly notificaiton_client: ClientProxy,
@@ -20,9 +20,7 @@ export class RabbitMqService implements MessagingService {
     const env = this.env.get("ENV");
     if (env === "TEST") return;
 
-    if (event !== "order.deliveried") {
-      await firstValueFrom(this.payment_client.emit(event, message));
-    }
+    await firstValueFrom(this.order_client.emit(event, message));
     await firstValueFrom(this.notificaiton_client.emit(event, message));
   }
 }

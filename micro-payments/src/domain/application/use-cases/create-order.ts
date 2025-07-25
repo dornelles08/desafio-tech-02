@@ -32,14 +32,16 @@ export class CreateOrderUseCase {
     status,
     createdAt,
   }: CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
-    const order = new Order({
-      id,
-      value,
-      customerEmail,
-      customerName,
-      status,
-      createdAt: new Date(createdAt),
-    });
+    const order = new Order(
+      {
+        value,
+        customerEmail,
+        customerName,
+        status,
+        createdAt: new Date(createdAt),
+      },
+      id
+    );
 
     await this.orderRepository.create(order);
 
