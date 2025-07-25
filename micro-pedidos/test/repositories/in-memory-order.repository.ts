@@ -18,4 +18,8 @@ export class InMemoryOrderRepository implements OrderRepository {
 
     this.items[index] = data;
   }
+
+  async findAll(): Promise<Order[]> {
+    return this.items;
+  }
 }
