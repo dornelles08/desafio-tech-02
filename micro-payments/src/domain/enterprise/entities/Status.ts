@@ -1,0 +1,1 @@
+export type Status = "criado" | "pago" | "finalizado";
