@@ -1,29 +1,134 @@
-version: "3.8"
-
 services:
+  kong-database:
+    image: postgres:13
+    container_name: kong-database
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
+    volumes:
+      - kong-db-data:/var/lib/postgresql/data
+    networks:
+      - kong-net
+
+  kong-migrations:
+    image: kong:3.6
+    depends_on:
+      - kong-database
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+    command: kong migrations bootstrap
+    networks:
+      - kong-net
+
+  kong:
+    image: kong:3.6
+    container_name: kong
+    depends_on:
+      - kong-database
+      - kong-migrations
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - 8000:8000 # Public requests
+      - 8001:8001 # Admin API
+    networks:
+      - kong-net
+
   rabbitmq:
-    image: rabbitmq:3.11-management
+    image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672" # porta AMQP
-      - "15672:15672" # UI de gerenciamento
+      - 5672:5672 # AMQP
+      - 15672:15672 # UI
+    networks:
+      - kong-net
+
+  postgres-order:
+    image: postgres:13
+    container_name: postgres-order
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
+      POSTGRES_USER: order
+      POSTGRES_DB: order
+      POSTGRES_PASSWORD: order
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-  
-  postgres:
-    image: postgres:latest
-    container_name: postgres-db
+      - order-db-data:/var/lib/postgresql/data
+    networks:
+      - kong-net
+
+  postgres-payment:
+    image: postgres:13
+    container_name: postgres-payment
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "123456"
-      PGDATA: /var/lib/postgresql/data
+      POSTGRES_USER: payment
+      POSTGRES_DB: payment
+      POSTGRES_PASSWORD: payment
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - payment-db-data:/var/lib/postgresql/data
+    networks:
+      - kong-net
+
+  order-service:
+    build:
+      context: ./micro-orders
+    container_name: order-service
+    depends_on:
+      - postgres-order
+      - rabbitmq
+    environment:
+      DATABASE_URL: postgres://order:order@postgres-order:5432/micro-order
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      ENV: "PRD"
+    networks:
+      - kong-net
+
+  payment-service:
+    build:
+      context: ./micro-payments
+    container_name: payment-service
+    depends_on:
+      - postgres-payment
+      - rabbitmq
+    environment:
+      DATABASE_URL: postgres://payment:payment@postgres-payment:5432/micro-payment
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      ENV: "PRD"
+    networks:
+      - kong-net
+
+  notification-service:
+    build:
+      context: ./micro-notifications
+    container_name: notification-service
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      EMAIL_HOST: sandbox.smtp.mailtrap.io
+      EMAIL_PORT: 587
+      EMAIL_SECURE: false
+      EMAIL_USER: ae0ce175b59d62
+      EMAIL_PASSWORD: 3e8f475fa3bb0a
+      ENV: "PRD"
+    networks:
+      - kong-net
 
 volumes:
-  rabbitmq_data:
+  kong-db-data:
+  order-db-data:
+  payment-db-data:
+
+networks:
+  kong-net:
+    driver: bridge
