@@ -21,7 +21,7 @@ export class OrderDeliveriedNotifyController {
     const originalMsg = context.getMessage();
 
     try {
-      console.log(` Recebido evento 'order.deliveried' para o pedido ID: ${data.id}`);
+      console.log(`Recebido evento 'order.deliveried' para o pedido ID: ${data.id}`);
       await this.orderNotify.execute({
         order: {
           id: data.id,

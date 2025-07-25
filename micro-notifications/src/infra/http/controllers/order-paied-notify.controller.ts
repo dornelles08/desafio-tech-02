@@ -21,7 +21,7 @@ export class OrderPaiedNotifyController {
     const originalMsg = context.getMessage();
 
     try {
-      console.log(` Recebido evento 'order.paied' para o pedido ID: ${data.id}`);
+      console.log(`Recebido evento 'order.paied' para o pedido ID: ${data.id}`);
       await this.orderNotify.execute({
         order: {
           id: data.id,
