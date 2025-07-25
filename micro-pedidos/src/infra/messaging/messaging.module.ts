@@ -10,17 +10,30 @@ import { RabbitMqService } from "./rabbitmq/rabbitmq.service";
     EnvModule,
     ClientsModule.registerAsync([
       {
-        name: "RABBIT_SERVICE",
+        name: "PAYMENT_CLIENT",
         imports: [EnvModule],
         inject: [EnvService],
         useFactory: (envService: EnvService) => ({
           transport: Transport.RMQ,
           options: {
             urls: [envService.get("RABBITMQ_URL")],
-            queue: "orders_queue",
-            queueOptions: {
-              durable: true,
-            },
+            queue: "payment_queue",
+            queueOptions: { durable: true },
+          },
+        }),
+      },
+    ]),
+    ClientsModule.registerAsync([
+      {
+        name: "NOTIFICATION_CLIENT",
+        imports: [EnvModule],
+        inject: [EnvService],
+        useFactory: (envService: EnvService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [envService.get("RABBITMQ_URL")],
+            queue: "notification_queue",
+            queueOptions: { durable: true },
           },
         }),
       },

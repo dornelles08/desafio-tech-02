@@ -38,7 +38,17 @@ export class DeliveryOrderUseCase {
 
     await this.orderRepository.save(order);
 
-    await this.menssagingService.sendMessage(order, "update-order");
+    await this.menssagingService.sendMessage(
+      {
+        id: order.id,
+        status: order.status,
+        value: order.value,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        createdAt: order.createdAt,
+      },
+      "order.deliveried"
+    );
 
     return right({ order });
   }

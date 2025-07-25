@@ -6,11 +6,17 @@ import { firstValueFrom } from "rxjs";
 @Injectable()
 export class RabbitMqService implements MessagingService {
   constructor(
-    @Inject("RABBIT_SERVICE")
-    private readonly client: ClientProxy
+    @Inject("PAYMENT_CLIENT")
+    private readonly payment_client: ClientProxy,
+
+    @Inject("NOTIFICATION_CLIENT")
+    private readonly notificaiton_client: ClientProxy
   ) {}
 
   async sendMessage(message: any, event: string): Promise<void> {
-    await firstValueFrom(this.client.emit(event, message));
+    if (event !== "order.deliveried") {
+      await firstValueFrom(this.payment_client.emit(event, message));
+    }
+    await firstValueFrom(this.notificaiton_client.emit(event, message));
   }
 }

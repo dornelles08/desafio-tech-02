@@ -17,6 +17,7 @@ export class Order {
   ) {
     this.props = {
       ...props,
+      createdAt: props.createdAt ?? new Date(),
       id: id ?? randomUUID(),
     };
   }

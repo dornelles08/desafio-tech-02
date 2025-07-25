@@ -12,13 +12,13 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
-      urls: [envService.get("RABBITMQ_URL")],      
-      queue: "orders_queue",
+      urls: [envService.get("RABBITMQ_URL")],
+      queue: "payment_queue",
       queueOptions: { durable: true },
       prefetchCount: 1,
       noAck: false,
       persistent: true,
-      consumerTag: "micro-order",
+      consumerTag: "micro-notifications",
     },
   });
 
