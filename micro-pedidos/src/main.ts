@@ -13,7 +13,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [envService.get("RABBITMQ_URL")],      
-      queue: "orders_queue",
+      queue: "order_queue",
       queueOptions: { durable: true },
       prefetchCount: 1,
       noAck: false,

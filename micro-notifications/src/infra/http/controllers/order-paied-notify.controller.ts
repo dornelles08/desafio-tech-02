@@ -31,7 +31,7 @@ export class OrderPaiedNotifyController {
           customerEmail: data.customerEmail,
           createdAt: data.createdAt,
         },
-        eventType: "deliveried",
+        eventType: "paied",
       });
 
       channel.ack(originalMsg);
