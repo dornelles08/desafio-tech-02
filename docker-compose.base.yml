@@ -43,6 +43,7 @@ services:
     ports:
       - 8000:8000 # Public requests
       - 8001:8001 # Admin API
+      - 8002:8002 # Admin UI
     networks:
       - kong-net
 
@@ -90,6 +91,7 @@ services:
       DATABASE_URL: postgres://order:order@postgres-order:5432/micro-order
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
       ENV: "PRD"
+      PORT: 3001
     networks:
       - kong-net
 
@@ -104,6 +106,7 @@ services:
       DATABASE_URL: postgres://payment:payment@postgres-payment:5432/micro-payment
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
       ENV: "PRD"
+      PORT: 3002
     networks:
       - kong-net
 
@@ -115,11 +118,11 @@ services:
       - rabbitmq
     environment:
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
-      EMAIL_HOST: sandbox.smtp.mailtrap.io
-      EMAIL_PORT: 587
-      EMAIL_SECURE: false
-      EMAIL_USER: ae0ce175b59d62
-      EMAIL_PASSWORD: 3e8f475fa3bb0a
+      EMAIL_HOST: "ADICIONAR INFORMAÇÃO"
+      EMAIL_PORT: "ADICIONAR INFORMAÇÃO"
+      EMAIL_SECURE: "ADICIONAR INFORMAÇÃO"
+      EMAIL_USER: "ADICIONAR INFORMAÇÃO"
+      EMAIL_PASSWORD: "ADICIONAR INFORMAÇÃO"
       ENV: "PRD"
     networks:
       - kong-net
