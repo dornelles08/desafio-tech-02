@@ -1,12 +1,13 @@
 import { Order } from "@/domain/enterprise/entities/Order";
 
 export class OrderPresenter {
-  static toHTTP(account: Order) {
+  static toHTTP(order: Order) {
     return {
-      id: account.id,
-      customerName: account.customerName,
-      customerEmail: account.customerEmail,
-      value: account.value,
+      id: order.id,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      value: order.value,
+      status: order.status
     };
   }
 }
