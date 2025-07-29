@@ -30,6 +30,8 @@ services:
     depends_on:
       - kong-database
       - kong-migrations
+      - order-service
+      - payment-service
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: kong-database
@@ -44,6 +46,18 @@ services:
       - 8000:8000 # Public requests
       - 8001:8001 # Admin API
       - 8002:8002 # Admin UI
+    networks:
+      - kong-net
+
+  kong-init:
+    image: curlimages/curl:8.8.0
+    container_name: kong-init
+    depends_on:
+      - kong
+    entrypoint: ["/bin/sh", "-c"]
+    command: /init/kong-init.sh
+    volumes:
+      - ./kong-init.sh:/init/kong-init.sh
     networks:
       - kong-net
 
