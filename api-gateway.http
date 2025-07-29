@@ -1,0 +1,21 @@
+@orderId = 70ace4b0-bec2-4ab3-bfc0-089b839a34c8
+@baseUrl = http://localhost:8000/microservice-
+
+### Create a Order
+POST {{baseUrl}}orders/orders
+Content-Type: application/json
+
+{
+    "value": 1000,
+    "customerEmail": "lipe.dornelles@hotmail.com",
+    "customerName": "Felipe Cliente 1"
+}
+
+### Fetching Orders
+GET {{baseUrl}}orders/orders
+
+### Pay a Order
+PUT {{baseUrl}}payments/orders/{{orderId}}/pay
+
+### Delivery a Order
+PUT {{baseUrl}}orders/orders/{{orderId}}/delivery
